@@ -1,4 +1,4 @@
-/* $Id: copytime.c,v 1.1 2004/07/20 04:04:22 hpa Exp $ */
+/* $Id$ */
 /* ----------------------------------------------------------------------- *
  *   
  *   Copyright 2004 H. Peter Anvin - All Rights Reserved
@@ -12,12 +12,12 @@
  * ----------------------------------------------------------------------- */
 
 /*
- * copytime.h
+ * copytime.c
  *
  * Copy time(s) from a struct stat
  */
 
-#include "mkzftree.h"
+#include "mkzftree.h"		/* Must be included first! */
 
 #include <utime.h>
 #include <sys/time.h>
@@ -52,4 +52,3 @@ int copytime(const char *filename, const struct stat *st)
   
 #endif
 }
-

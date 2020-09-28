@@ -1,6 +1,6 @@
 Summary: Utilities to create compressed CD-ROM filesystems.
 Name: zisofs-tools
-Version: 1.0.6
+Version: 1.0.8
 Release: 1
 License: GPL
 Group: Applications/System

@@ -3,7 +3,7 @@ dnl autoconf input file to generate MCONFIG
 dnl
 
 AC_PREREQ(2.57)
-AC_REVISION([$Id: configure.in,v 1.7 2004/07/20 04:04:22 hpa Exp $])
+AC_REVISION([$Id$])
 AC_INIT(MCONFIG.in)
 AC_PREFIX_DEFAULT(/usr)
 

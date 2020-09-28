@@ -1,4 +1,4 @@
-/* $Id: mkzftree.c,v 1.17 2004/07/20 04:04:22 hpa Exp $ */
+/* $Id$ */
 /* ----------------------------------------------------------------------- *
  *   
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
@@ -59,6 +59,8 @@
  * The block data is compressed according to "zlib".
  */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,12 +71,11 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-#include "mkzftree.h"
-#include "version.h"
-
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
+
+#include "version.h"
 
 /* Command line options */
 struct cmdline_options opt = {
@@ -94,7 +95,7 @@ struct cmdline_options opt = {
 const char *program;
 
 /* Long options */
-#define OPTSTRING "fz:up:xXC:lLFvqV:hw"
+#define OPTSTRING "fz:up:xXC:lLFvqV:hws"
 #ifdef HAVE_GETOPT_LONG
 const struct option long_options[] = {
   { "force",	             0,  0,  'f' },
@@ -112,6 +113,7 @@ const struct option long_options[] = {
   { "verbosity",             1,  0,  'V' },
   { "help",                  0,  0,  'h' },
   { "version",               0,  0,  'w' },
+  { "sloppy",               0,  0,  's' },
   { 0, 0, 0, 0 }
 };
 #define LO(X) X

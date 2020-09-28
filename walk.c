@@ -1,7 +1,7 @@
-#ident "$Id: walk.c,v 1.6 2004/07/20 04:04:22 hpa Exp $"
+#ident "$Id$"
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001-2002 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  * Functions to walk the file tree
  */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
@@ -26,7 +28,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "mkzftree.h"
+
 #include "iso9660.h"
 
 static int munge_file(const char *inpath, const char *outpath,

@@ -1,7 +1,7 @@
-#ident "$Id: mkzftree.h,v 1.6 2004/07/20 04:04:22 hpa Exp $"
+#ident "$Id$"
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,7 +11,12 @@
  *
  * ----------------------------------------------------------------------- */
 
+#ifndef MKZFTREE_H
+#define MKZFTREE_H
+
+/* config.h should be included before any system headers!!!! */
 #include "config.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,3 +100,4 @@ void hash_insert_file(struct stat *, const char *);
 /* copytime.h */
 int copytime(const char *, const struct stat *);
 
+#endif /* MKZFTREE_H */
