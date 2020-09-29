@@ -33,48 +33,50 @@
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
 #else
-#define EX_USAGE	64	/* command line usage error */
-#define EX_DATAERR	65	/* data format error */
-#define EX_NOINPUT	66	/* cannot open input */
-#define EX_NOUSER	67	/* addressee unknown */
-#define EX_NOHOST	68	/* host name unknown */
-#define EX_UNAVAILABLE	69	/* service unavailable */
-#define EX_SOFTWARE	70	/* internal software error */
-#define EX_OSERR	71	/* system error (e.g., can't fork) */
-#define EX_OSFILE	72	/* critical OS file missing */
-#define EX_CANTCREAT	73	/* can't create (user) output file */
-#define EX_IOERR	74	/* input/output error */
-#define EX_TEMPFAIL	75	/* temp failure; user is invited to retry */
-#define EX_PROTOCOL	76	/* remote error in protocol */
-#define EX_NOPERM	77	/* permission denied */
-#define EX_CONFIG	78	/* configuration error */
+#define EX_USAGE 64       /* command line usage error */
+#define EX_DATAERR 65     /* data format error */
+#define EX_NOINPUT 66     /* cannot open input */
+#define EX_NOUSER 67      /* addressee unknown */
+#define EX_NOHOST 68      /* host name unknown */
+#define EX_UNAVAILABLE 69 /* service unavailable */
+#define EX_SOFTWARE 70    /* internal software error */
+#define EX_OSERR 71       /* system error (e.g., can't fork) */
+#define EX_OSFILE 72      /* critical OS file missing */
+#define EX_CANTCREAT 73   /* can't create (user) output file */
+#define EX_IOERR 74       /* input/output error */
+#define EX_TEMPFAIL 75    /* temp failure; user is invited to retry */
+#define EX_PROTOCOL 76    /* remote error in protocol */
+#define EX_NOPERM 77      /* permission denied */
+#define EX_CONFIG 78      /* configuration error */
 #endif
 
-/* File transformation functions */  
+/* File transformation functions */
 typedef int (*munger_func)(FILE *, FILE *, off_t);
 int block_compress_file(FILE *, FILE *, off_t);
 int block_uncompress_file(FILE *, FILE *, off_t);
 
 /* mkzftree.c */
-extern const char *program;	/* Program name */
-enum verbosity {		/* Message verbosity */
-  vl_quiet,			/* No messages */
-  vl_error,			/* Error messages only */
-  vl_filename,			/* Display filenames */
-  vl_crib,			/* Cribbing files */
+extern const char *program; /* Program name */
+enum verbosity
+{              /* Message verbosity */
+  vl_quiet,    /* No messages */
+  vl_error,    /* Error messages only */
+  vl_filename, /* Display filenames */
+  vl_crib,     /* Cribbing files */
 };
 #define default_verbosity vl_error
-struct cmdline_options {
-  int force;			/* Always compress */
-  int level;			/* Compression level */
-  int parallel;			/* Parallelism (0 = strictly serial) */
-  int onefs;			/* One filesystem only */
-  int onedir;			/* One directory only */
-  int do_mkdir;			/* Create stub directories */
-  int file_root;		/* The root may be a file */
-  int sloppy;			/* Don't make sure metadata is set correctly */
-  enum verbosity verbosity;	/* Message verbosity */
-  munger_func munger;		/* Default action */
+struct cmdline_options
+{
+  int force;                /* Always compress */
+  int level;                /* Compression level */
+  int parallel;             /* Parallelism (0 = strictly serial) */
+  int onefs;                /* One filesystem only */
+  int onedir;               /* One directory only */
+  int do_mkdir;             /* Create stub directories */
+  int file_root;            /* The root may be a file */
+  int sloppy;               /* Don't make sure metadata is set correctly */
+  enum verbosity verbosity; /* Message verbosity */
+  munger_func munger;       /* Default action */
 };
 extern struct cmdline_options opt;
 

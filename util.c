@@ -11,7 +11,7 @@
  *
  * ----------------------------------------------------------------------- */
 
-#include "mkzftree.h"		/* Must be included first! */
+#include "mkzftree.h" /* Must be included first! */
 
 #include <stdio.h>
 #include <errno.h>
@@ -24,7 +24,8 @@ void *xmalloc(size_t size)
 {
   void *p = malloc(size);
 
-  if ( !p ) {
+  if (!p)
+  {
     perror(program);
     exit(EX_OSERR);
   }
@@ -36,11 +37,12 @@ char *xstrdup(const char *str)
 {
   char *s = strdup(str);
 
-  if ( !s ) {
+  if (!s)
+  {
     perror(program);
     exit(EX_OSERR);
   }
-  
+
   return s;
 }
 
@@ -49,8 +51,7 @@ void message(enum verbosity level, const char *format, ...)
   va_list ap;
 
   va_start(ap, format);
-  if ( opt.verbosity >= level )
+  if (opt.verbosity >= level)
     vfprintf(stderr, format, ap);
   va_end(ap);
 }
-

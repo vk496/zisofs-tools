@@ -17,20 +17,21 @@
 #define ISO9660_H
 
 #ifndef CBLOCK_SIZE_LG2
-#define CBLOCK_SIZE_LG2	15	/* Compressed block size */
+#define CBLOCK_SIZE_LG2 15 /* Compressed block size */
 #endif
-#define CBLOCK_SIZE	(1 << CBLOCK_SIZE_LG2)
+#define CBLOCK_SIZE (1 << CBLOCK_SIZE_LG2)
 
 /* Compressed file magic */
 extern const unsigned char zisofs_magic[8];
 
 /* VERY VERY VERY IMPORTANT: Must be a multiple of 4 bytes */
-struct compressed_file_header {
+struct compressed_file_header
+{
   char magic[8];
   char uncompressed_len[4];
   unsigned char header_size;
   unsigned char block_size;
-  char reserved[2];		/* Reserved for future use, MBZ */
+  char reserved[2]; /* Reserved for future use, MBZ */
 };
 
 /* iso9660 integer formats */

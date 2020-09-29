@@ -59,7 +59,7 @@
  * The block data is compressed according to "zlib".
  */
 
-#include "mkzftree.h"		/* Must be included first! */
+#include "mkzftree.h" /* Must be included first! */
 
 #include <errno.h>
 #include <stdlib.h>
@@ -79,16 +79,16 @@
 
 /* Command line options */
 struct cmdline_options opt = {
-  0,				/* Force compression */
-  9,				/* Compression level */
-  0,				/* Parallelism (0 = strictly serial) */
-  0,				/* One filesystem only */
-  0,				/* One directory only */
-  1,				/* Create stub directories */
-  0,				/* Root may be a file */
-  0,				/* Be paranoid about metadata */
-  default_verbosity,		/* Default verbosity */
-  block_compress_file		/* Default transformation function */
+    0,                  /* Force compression */
+    9,                  /* Compression level */
+    0,                  /* Parallelism (0 = strictly serial) */
+    0,                  /* One filesystem only */
+    0,                  /* One directory only */
+    1,                  /* Create stub directories */
+    0,                  /* Root may be a file */
+    0,                  /* Be paranoid about metadata */
+    default_verbosity,  /* Default verbosity */
+    block_compress_file /* Default transformation function */
 };
 
 /* Program name */
@@ -98,52 +98,35 @@ const char *program;
 #define OPTSTRING "fz:up:xXC:lLFvqV:hws"
 #ifdef HAVE_GETOPT_LONG
 const struct option long_options[] = {
-  { "force",	             0,  0,  'f' },
-  { "level",                 1,  0,  'z' },
-  { "uncompress",            0,  0,  'u' },
-  { "parallelism",           1,  0,  'p' },
-  { "one-filesystem",        0,  0,  'x' },
-  { "strict-one-filesystem", 0,  0,  'X' },
-  { "crib-tree",             1,  0,  'C' },
-  { "local",                 0,  0,  'l' },
-  { "strict-local",          0,  0,  'L' },
-  { "file",                  0,  0,  'F' },
-  { "verbose",               0,  0,  'v' },
-  { "quiet",                 0,  0,  'q' },
-  { "verbosity",             1,  0,  'V' },
-  { "help",                  0,  0,  'h' },
-  { "version",               0,  0,  'w' },
-  { "sloppy",               0,  0,  's' },
-  { 0, 0, 0, 0 }
-};
+    {"force", 0, 0, 'f'},
+    {"level", 1, 0, 'z'},
+    {"uncompress", 0, 0, 'u'},
+    {"parallelism", 1, 0, 'p'},
+    {"one-filesystem", 0, 0, 'x'},
+    {"strict-one-filesystem", 0, 0, 'X'},
+    {"crib-tree", 1, 0, 'C'},
+    {"local", 0, 0, 'l'},
+    {"strict-local", 0, 0, 'L'},
+    {"file", 0, 0, 'F'},
+    {"verbose", 0, 0, 'v'},
+    {"quiet", 0, 0, 'q'},
+    {"verbosity", 1, 0, 'V'},
+    {"help", 0, 0, 'h'},
+    {"version", 0, 0, 'w'},
+    {"sloppy", 0, 0, 's'},
+    {0, 0, 0, 0}};
 #define LO(X) X
 #else
-#define getopt_long(C,V,O,L,I) getopt(C,V,O)
+#define getopt_long(C, V, O, L, I) getopt(C, V, O)
 #define LO(X)
 #endif
-  
+
 static void usage(enum verbosity level, int err)
 {
   message(level,
-	  "zisofs-tools " ZISOFS_TOOLS_VERSION "\n"
-	  "Usage: %s [options] intree outtree\n"
-	  LO("  --force                ")"  -f    Always compress, even if result is larger\n"
-	  LO("  --level #              ")"  -z #  Set compression level (1-9)\n"
-	  LO("  --uncompress           ")"  -u    Uncompress an already compressed tree\n"
-	  LO("  --parallelism #        ")"  -p #  Process up to # files in parallel\n"
-	  LO("  --one-filesystem       ")"  -x    Do not cross filesystem boundaries\n"
-	  LO("  --strict-one-filesystem")"  -X    Same as -x, but don't create stubs dirs\n"
-	  LO("  --crib-tree            ")"  -C    Steal \"crib\" files from an old tree\n"
-	  LO("  --local                ")"  -l    Do not recurse into subdirectoires\n"
-	  LO("  --strict-local         ")"  -L    Same as -l, but don't create stubs dirs\n"
-	  LO("  --file                 ")"  -F    Operate possibly on a single file\n"
-	  LO("  --sloppy               ")"  -s    Don't abort if metadata cannot be set\n"
-	  LO("  --verbose              ")"  -v    Increase message verbosity\n"
-	  LO("  --verbosity #          ")"  -V #  Set message verbosity to # (default = %d)\n"
-	  LO("  --quiet                ")"  -q    No messages, not even errors (-V 0)\n"
-	  LO("  --help                 ")"  -h    Display this message\n"
-	  LO("  --version              ")"  -w    Display the program version\n"
-	  ,program, (int)default_verbosity);
+          "zisofs-tools " ZISOFS_TOOLS_VERSION "\n"
+          "Usage: %s [options] intree outtree\n" LO("  --force                ") "  -f    Always compress, even if result is larger\n" LO("  --level #              ") "  -z #  Set compression level (1-9)\n" LO("  --uncompress           ") "  -u    Uncompress an already compressed tree\n" LO("  --parallelism #        ") "  -p #  Process up to # files in parallel\n" LO("  --one-filesystem       ") "  -x    Do not cross filesystem boundaries\n" LO("  --strict-one-filesystem") "  -X    Same as -x, but don't create stubs dirs\n" LO("  --crib-tree            ") "  -C    Steal \"crib\" files from an old tree\n" LO("  --local                ") "  -l    Do not recurse into subdirectoires\n" LO("  --strict-local         ") "  -L    Same as -l, but don't create stubs dirs\n" LO("  --file                 ") "  -F    Operate possibly on a single file\n" LO("  --sloppy               ") "  -s    Don't abort if metadata cannot be set\n" LO("  --verbose              ") "  -v    Increase message verbosity\n" LO("  --verbosity #          ") "  -V #  Set message verbosity to # (default = %d)\n" LO("  --quiet                ") "  -q    No messages, not even errors (-V 0)\n" LO("  --help                 ") "  -h    Display this message\n" LO("  --version              ") "  -w    Display the program version\n",
+          program, (int)default_verbosity);
   exit(err);
 }
 
@@ -153,12 +136,11 @@ static int opt_atoi(const char *str)
   long out;
 
   out = strtol(str, &endptr, 10);
-  if ( *endptr )
+  if (*endptr)
     usage(vl_error, EX_USAGE);
 
   return (int)out;
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -168,18 +150,20 @@ int main(int argc, char *argv[])
 
   program = argv[0];
 
-  while ( (optch = getopt_long(argc, argv, OPTSTRING, long_options, NULL))
-	  != EOF ) {
-    switch(optch) {
+  while ((optch = getopt_long(argc, argv, OPTSTRING, long_options, NULL)) != EOF)
+  {
+    switch (optch)
+    {
     case 'f':
-      opt.force = 1;		/* Always compress */
+      opt.force = 1; /* Always compress */
       break;
     case 'z':
       opt.level = opt_atoi(optarg);
-      if ( opt.level < 1 || opt.level > 9 ) {
-	message(vl_error, "%s: invalid compression level: %d\n",
-		program, optarg);
-	exit(EX_USAGE);
+      if (opt.level < 1 || opt.level > 9)
+      {
+        message(vl_error, "%s: invalid compression level: %d\n",
+                program, optarg);
+        exit(EX_USAGE);
       }
       break;
     case 'v':
@@ -201,16 +185,20 @@ int main(int argc, char *argv[])
       opt.parallel = opt_atoi(optarg);
       break;
     case 'x':
-      opt.onefs = 1;  opt.do_mkdir = 1;
+      opt.onefs = 1;
+      opt.do_mkdir = 1;
       break;
     case 'l':
-      opt.onedir = 1; opt.do_mkdir = 1;
+      opt.onedir = 1;
+      opt.do_mkdir = 1;
       break;
     case 'X':
-      opt.onefs = 1;  opt.do_mkdir = 0;
+      opt.onefs = 1;
+      opt.do_mkdir = 0;
       break;
     case 'L':
-      opt.onedir = 1; opt.do_mkdir = 0;
+      opt.onedir = 1;
+      opt.do_mkdir = 0;
       break;
     case 'F':
       opt.file_root = 1;
@@ -230,50 +218,60 @@ int main(int argc, char *argv[])
     }
   }
 
-  if ( (argc-optind) != 2 )
+  if ((argc - optind) != 2)
     usage(vl_error, EX_USAGE);
 
-  in  = argv[optind];		/* Input tree */
-  out = argv[optind+1];		/* Output tree */
+  in = argv[optind];      /* Input tree */
+  out = argv[optind + 1]; /* Output tree */
 
   umask(077);
 
-  if ( opt.file_root ) {
-    if ( lstat(in, &st) ) {
+  if (opt.file_root)
+  {
+    if (lstat(in, &st))
+    {
       message(vl_error, "%s: %s: %s\n", program, in, strerror(errno));
       exit(EX_NOINPUT);
     }
 
     err = munge_entry(in, out, crib, NULL);
-  } else {
+  }
+  else
+  {
     /* Special case: we use stat() for the root, not lstat() */
-    if ( stat(in, &st) ) {
+    if (stat(in, &st))
+    {
       message(vl_error, "%s: %s: %s\n", program, in, strerror(errno));
       exit(EX_NOINPUT);
     }
-    if ( !S_ISDIR(st.st_mode) ) {
+    if (!S_ISDIR(st.st_mode))
+    {
       message(vl_error, "%s: %s: Not a directory\n", program, in);
       exit(EX_DATAERR);
     }
-    
+
     err = munge_tree(in, out, crib);
-  }    
+  }
 
   wait_for_all_workers();
-    
-  if ( err )
+
+  if (err)
     exit(err);
 
-  if ( !opt.file_root ) {
-    if ( chown(out, st.st_uid, st.st_gid) && !opt.sloppy ) {
+  if (!opt.file_root)
+  {
+    if (chown(out, st.st_uid, st.st_gid) && !opt.sloppy)
+    {
       message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }
-    if ( chmod(out, st.st_mode) && !opt.sloppy && !err ) {
+    if (chmod(out, st.st_mode) && !opt.sloppy && !err)
+    {
       message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }
-    if ( copytime(out, &st) && !opt.sloppy && !err ) {
+    if (copytime(out, &st) && !opt.sloppy && !err)
+    {
       message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }

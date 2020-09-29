@@ -17,7 +17,7 @@
  * Copy time(s) from a struct stat
  */
 
-#include "mkzftree.h"		/* Must be included first! */
+#include "mkzftree.h" /* Must be included first! */
 
 #include <utime.h>
 #include <sys/time.h>
@@ -27,28 +27,28 @@
 int copytime(const char *filename, const struct stat *st)
 {
 #if defined(HAVE_UTIMES) && (defined(HAVE_STRUCT_STAT_ST_MTIM_TV_USEC) || \
-			     defined(HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC))
-  
+                             defined(HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC))
+
   struct timeval tv[2];
-  
-# ifdef HAVE_STRUCT_STAT_ST_MTIM_TV_USEC
+
+#ifdef HAVE_STRUCT_STAT_ST_MTIM_TV_USEC
   tv[0] = st->st_atim;
   tv[1] = st->st_mtim;
-# else
-  tv[0].tv_sec  = st->st_atim.tv_sec;
-  tv[0].tv_usec = st->st_atim.tv_nsec / 1000;
-  tv[1].tv_sec  = st->st_mtim.tv_sec;
-  tv[1].tv_usec = st->st_mtim.tv_nsec / 1000;
-# endif
-  return utimes(filename, tv);
-  
 #else
-  
-  struct utimbuf ut; 
-  
-  ut.actime  = st->st_atime;
+  tv[0].tv_sec = st->st_atim.tv_sec;
+  tv[0].tv_usec = st->st_atim.tv_nsec / 1000;
+  tv[1].tv_sec = st->st_mtim.tv_sec;
+  tv[1].tv_usec = st->st_mtim.tv_nsec / 1000;
+#endif
+  return utimes(filename, tv);
+
+#else
+
+  struct utimbuf ut;
+
+  ut.actime = st->st_atime;
   ut.modtime = st->st_mtime;
   return utime(filename, &ut);
-  
+
 #endif
 }

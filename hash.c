@@ -17,11 +17,12 @@
  * Hash table used to find hard-linked files
  */
 
-#include "mkzftree.h"		/* Must be included first! */
+#include "mkzftree.h" /* Must be included first! */
 
-#define HASH_BUCKETS 	  2683
+#define HASH_BUCKETS 2683
 
-struct file_hash {
+struct file_hash
+{
   struct file_hash *next;
   struct stat st;
   const char *outfile_name;
@@ -34,20 +35,22 @@ const char *hash_find_file(struct stat *st)
   int bucket = (st->st_ino + st->st_dev) % HASH_BUCKETS;
   struct file_hash *hp;
 
-  for ( hp = hashp[bucket] ; hp ; hp = hp->next ) {
-    if ( hp->st.st_ino   == st->st_ino &&
-	 hp->st.st_dev   == st->st_dev &&
-	 hp->st.st_mode  == st->st_mode &&
-	 hp->st.st_nlink == st->st_nlink &&
-	 hp->st.st_uid   == st->st_uid &&
-	 hp->st.st_gid   == st->st_gid &&
-	 hp->st.st_size  == st->st_size &&
-	 hp->st.st_mtime == st->st_mtime ) {
+  for (hp = hashp[bucket]; hp; hp = hp->next)
+  {
+    if (hp->st.st_ino == st->st_ino &&
+        hp->st.st_dev == st->st_dev &&
+        hp->st.st_mode == st->st_mode &&
+        hp->st.st_nlink == st->st_nlink &&
+        hp->st.st_uid == st->st_uid &&
+        hp->st.st_gid == st->st_gid &&
+        hp->st.st_size == st->st_size &&
+        hp->st.st_mtime == st->st_mtime)
+    {
       /* Good enough, it's the same file */
       return hp->outfile_name;
     }
   }
-  return NULL;			/* No match */
+  return NULL; /* No match */
 }
 
 /* Note: the stat structure is the input file; the name
@@ -57,11 +60,9 @@ void hash_insert_file(struct stat *st, const char *outfile)
   int bucket = (st->st_ino + st->st_dev) % HASH_BUCKETS;
   struct file_hash *hp = xmalloc(sizeof(struct file_hash));
 
-  hp->next         = hashp[bucket];
+  hp->next = hashp[bucket];
   memcpy(&hp->st, st, sizeof(struct stat));
   hp->outfile_name = xstrdup(outfile);
 
-  hashp[bucket]    = hp;
+  hashp[bucket] = hp;
 }
-
-
