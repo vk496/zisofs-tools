@@ -1,0 +1,8 @@
+.vscode
+*.o
+*.cache
+config.*
+configure
+MCONFIG
+mkzftree
+version.h
