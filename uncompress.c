@@ -1,6 +1,6 @@
 /* $Id$ */
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -15,22 +15,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <zlib.h>
+#include "external_compressors.h"
 
 #include "iso9660.h"
 
 int block_uncompress_file(FILE *input, FILE *output, off_t size)
 {
   struct compressed_file_header hdr;
-  Bytef *inbuf, *outbuf;
+  unsigned char *inbuf, *outbuf;
   int block_shift;
   char *pointer_block, *pptr;
   unsigned long nblocks;
   unsigned long fullsize, block_size, block_size2;
   size_t ptrblock_bytes;
   unsigned long cstart, cend, csize;
-  uLong bytes;
-  int zerr;
+  unsigned long bytes;
   int err = EX_SOFTWARE;
 
   if ((bytes = fread(&hdr, 1, sizeof hdr, input)) != sizeof hdr)
@@ -113,9 +112,8 @@ int block_uncompress_file(FILE *input, FILE *output, off_t size)
       }
 
       bytes = block_size; /* Max output buffer size */
-      if ((zerr = uncompress(outbuf, &bytes, inbuf, csize)) != Z_OK)
+      if ((err = uncompress_zlib(outbuf, &bytes, inbuf, csize)) != EX_OK)
       {
-        err = (zerr = Z_MEM_ERROR) ? EX_OSERR : EX_DATAERR;
         goto free_ptr_bail;
       }
     }

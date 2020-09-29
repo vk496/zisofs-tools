@@ -1,5 +1,5 @@
 ## -----------------------------------------------------------------------
-##   
+##
 ##   Copyright 2001 H. Peter Anvin - All Rights Reserved
 ##
 ##   This program is free software; you can redistribute it and/or modify
@@ -23,7 +23,7 @@ PROGS     = mkzftree
 MAN1PAGES = mkzftree.1
 
 OBJS = 	mkzftree.o walk.o workers.o util.o hash.o iso9660.o copytime.o \
-	compress.o uncompress.o
+	compress.o uncompress.o external_compressors.o
 
 all: $(PROGS)
 
@@ -94,3 +94,4 @@ uncompress.o:	uncompress.c mkzftree.h config.h iso9660.h
 util.o:		util.c mkzftree.h config.h
 walk.o:		walk.c mkzftree.h config.h
 workers.o:	workers.c mkzftree.h config.h
+external_compressors.o: external_compressors.c external_compressors.h

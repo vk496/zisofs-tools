@@ -1,6 +1,6 @@
 #ident "$Id$"
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -33,6 +33,7 @@
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
 #else
+#define EX_OK 0           /* successful termination */
 #define EX_USAGE 64       /* command line usage error */
 #define EX_DATAERR 65     /* data format error */
 #define EX_NOINPUT 66     /* cannot open input */

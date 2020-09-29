@@ -17,21 +17,20 @@
 #include <stdio.h>
 #include <utime.h>
 #include <unistd.h>
-#include <zlib.h>
+#include "external_compressors.h"
 
 #include "iso9660.h"
 
 int block_compress_file(FILE *input, FILE *output, off_t size)
 {
   struct compressed_file_header hdr;
-  Bytef inbuf[CBLOCK_SIZE], outbuf[2 * CBLOCK_SIZE];
+  unsigned char inbuf[CBLOCK_SIZE], outbuf[2 * CBLOCK_SIZE];
   size_t bytes, pointer_bytes, nblocks, block;
-  uLong cbytes; /* uLong is a zlib datatype */
+  size_t cbytes;
   char *pointer_block, *curptr;
   off_t position;
   int i;
   int force_compress = opt.force;
-  int zerr;
   int err = EX_SOFTWARE;
 
   if ((sizeof hdr) & 3)
@@ -98,9 +97,8 @@ int block_compress_file(FILE *input, FILE *output, off_t size)
     else
     {
       cbytes = 2 * CBLOCK_SIZE;
-      if ((zerr = compress2(outbuf, &cbytes, inbuf, bytes, opt.level)) != Z_OK)
+      if ((err = compress_zlib(outbuf, &cbytes, inbuf, bytes, opt.level)) != EX_OK)
       {
-        err = (zerr == Z_MEM_ERROR) ? EX_OSERR : EX_SOFTWARE;
         goto free_ptr_bail; /* Compression failure */
       }
       if (fwrite(outbuf, 1, cbytes, output) != cbytes)
