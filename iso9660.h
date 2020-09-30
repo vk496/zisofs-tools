@@ -1,6 +1,6 @@
 #ident "$Id$"
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,6 +16,8 @@
 #ifndef ISO9660_H
 #define ISO9660_H
 
+#include <stdint.h>
+
 #ifndef CBLOCK_SIZE_LG2
 #define CBLOCK_SIZE_LG2 15 /* Compressed block size */
 #endif
@@ -28,10 +30,13 @@ extern const unsigned char zisofs_magic[8];
 struct compressed_file_header
 {
   char magic[8];
-  char uncompressed_len[4];
+  char uncompressed_len_low[4];
   unsigned char header_size;
   unsigned char block_size;
-  char reserved[2]; /* Reserved for future use, MBZ */
+  uint8_t compressor;
+  char reserved[1]; /* Reserved for future use, MBZ */
+  uint8_t uncompressed_len_high[4]; // Used as extension of the size to handle files bigger than 2^32 bytes. unc_len2 << 32 | unc_len
+  uint8_t reserved2[12];
 };
 
 /* iso9660 integer formats */
@@ -47,5 +52,10 @@ unsigned int get_732(void *);
 void set_733(void *, unsigned int);
 #define get_723(x) get_721(x)
 #define get_733(x) get_731(x)
+
+/* Wrap uint64 in two ints */
+
+void set_uint64_two_731(uint64_t size, void* ufsl, void* ufsh);
+uint64_t get_uint64_two_731(void* ufsl, void* ufsh);
 
 #endif /* ISO9660_H */

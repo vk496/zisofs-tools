@@ -1,6 +1,6 @@
 #ident "$Id$"
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -58,7 +58,7 @@ static int munge_file(const char *inpath, const char *outpath,
 
         if ((e == sizeof cfh &&
              !memcmp(cfh.magic, zisofs_magic, sizeof zisofs_magic) &&
-             (off_t)get_731(cfh.uncompressed_len) == st->st_size) ||
+             (off_t)get_uint64_two_731(&cfh.uncompressed_len_low, &cfh.uncompressed_len_high) == st->st_size) ||
             (st->st_size == cst.st_size &&
              (e < (int)(sizeof zisofs_magic) ||
               memcmp(cfh.magic, zisofs_magic, sizeof zisofs_magic))))

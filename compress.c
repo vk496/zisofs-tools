@@ -43,7 +43,7 @@ int block_compress_file(FILE *input, FILE *output, off_t size)
   memcpy(&hdr.magic, zisofs_magic, sizeof zisofs_magic);
   hdr.header_size = (sizeof hdr) >> 2;
   hdr.block_size = CBLOCK_SIZE_LG2;
-  set_731(&hdr.uncompressed_len, size);
+  set_uint64_two_731(size, &hdr.uncompressed_len_low, &hdr.uncompressed_len_high);
 
   if (fwrite(&hdr, sizeof hdr, 1, output) != 1)
     return EX_CANTCREAT;

@@ -26,7 +26,8 @@ int block_uncompress_file(FILE *input, FILE *output, off_t size)
   int block_shift;
   char *pointer_block, *pptr;
   unsigned long nblocks;
-  unsigned long fullsize, block_size, block_size2;
+  unsigned long block_size, block_size2;
+  uint64_t fullsize;
   size_t ptrblock_bytes;
   unsigned long cstart, cend, csize;
   unsigned long bytes;
@@ -64,7 +65,7 @@ int block_uncompress_file(FILE *input, FILE *output, off_t size)
   if (fseek(input, hdr.header_size << 2, SEEK_SET) == -1)
     return EX_IOERR;
 
-  fullsize = get_731(hdr.uncompressed_len);
+  fullsize = get_uint64_two_731(&hdr.uncompressed_len_low, &hdr.uncompressed_len_high);
   block_shift = hdr.block_size;
   block_size = 1UL << block_shift;
   block_size2 = block_size << 1;

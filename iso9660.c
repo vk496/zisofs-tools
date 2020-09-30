@@ -100,4 +100,19 @@ void set_733(void *pnt, unsigned int i)
   p[4] = p[3] = (i >> 24) & 0xff;
 }
 
+void set_uint64_two_731(uint64_t size, void* ufsl, void* ufsh) {
+  uint32_t ul = (uint32_t) (size & 0xffffffff);
+  uint32_t uh = (uint32_t) (size >> 32);
+
+  set_731(ufsl, ul);
+  set_731(ufsh, uh);
+}
+
+uint64_t get_uint64_two_731(void* ufsl, void* ufsh) {
+  uint32_t ul = get_731(ufsl);
+  uint32_t uh = get_731(ufsh);
+
+  return (uint64_t) (((uint64_t)uh << 32) | ((uint64_t) ul & 0xffffffff));
+}
+
 #define get_733(x) get_731(x)

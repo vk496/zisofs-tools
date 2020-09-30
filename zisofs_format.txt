@@ -3,7 +3,7 @@
 
                    as of zisofs-tools-1.0.8 by H. Peter Anvin
                    and cdrtools-2.01.01a39 by Joerg Schilling
- 
+
        For libburnia-project.org by Thomas Schmitt <scdbackup@gmx.net>
        - distribute freely , please report any errors or ambiguities -
 
@@ -16,7 +16,7 @@ access. Within a RRIP enhanced ISO 9660 image the format is additionally marked
 by a System Use entry with signature "ZF".
 
 The uncompressed size of a single zisofs compressed file is restricted
-to 4 GiB - 1. Larger files shall not be compressed.
+to 16 777 216 TiB - 1. Larger files shall not be compressed.
 
 
                                 File Header
@@ -24,11 +24,20 @@ to 4 GiB - 1. Larger files shall not be compressed.
 The file header has this layout (quoted from zisofs-tools-1.0.8/mkzftree.c):
     Byte offset   iso9660 type    Contents
       0           (8 bytes)       Magic number (37 E4 53 96 C9 DB D6 07)
-      8           7.3.1           Uncompressed file size
+      8           7.3.1           Uncompressed file size low (ufsl)
      12           7.1.1           header_size >> 2 (currently 4)
      13           7.1.1           log2(block_size)
-     14           (2 bytes)       Reserved, must be zero
-So its size is 16.
+     14           7.1.1           Compressor algorithm
+     15           (1 bytes)       Reserved, must be zero
+     16           7.3.1           Uncompressed file size high (ufsh)
+     20           (12 bytes)      Reserved, must be zero
+So its size is 32.
+
+Previous version of ZF used a header of 16 bytes with 4 bytes dedicated to the uncompressed file size (max 4 GiB).
+In order to extend that limitation without breaking legacy software which supports ZF,
+another field is used and both combined to store the size. Unsupported files (bigger than 4 GiB) with legacy code
+will have a unexpected behaviour.
+
 7.3.1 means little endian 4-byte words. 7.1.1. means unsigned single bytes.
 
 Readers shall be able to handle log2(block_size) values 15, 16 and 17
@@ -79,7 +88,7 @@ Its fields are:
 
   [3] "BP 4 - System Use Entry Version" shall be 1 as in ISO 9660:7.1.1.
 
-  [4] "BP 5 to BP 6 - Algorithm"  shall be (70)(7A) ("pz") to indicate 
+  [4] "BP 5 to BP 6 - Algorithm"  shall be (70)(7A) ("pz") to indicate
       "paged zlib".
 
   [5] "BP 7 - Header Size Div 4" shall specify as an 8-bit number the number of
