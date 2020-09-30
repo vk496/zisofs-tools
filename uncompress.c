@@ -113,7 +113,7 @@ int block_uncompress_file(FILE *input, FILE *output, off_t size)
       }
 
       bytes = block_size; /* Max output buffer size */
-      if ((err = uncompress_zlib(outbuf, &bytes, inbuf, csize)) != EX_OK)
+      if ((err = uncompress_alg(hdr.algorithm, outbuf, &bytes, inbuf, csize)) != EX_OK)
       {
         goto free_ptr_bail;
       }

@@ -1,6 +1,6 @@
 /* $Id$ */
 /* ----------------------------------------------------------------------- *
- *   
+ *
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -80,6 +80,7 @@
 /* Command line options */
 struct cmdline_options opt = {
     0,                  /* Force compression */
+    0,                  /* Compression algorithm */
     9,                  /* Compression level */
     0,                  /* Parallelism (0 = strictly serial) */
     0,                  /* One filesystem only */
@@ -95,10 +96,11 @@ struct cmdline_options opt = {
 const char *program;
 
 /* Long options */
-#define OPTSTRING "fz:up:xXC:lLFvqV:hws"
+#define OPTSTRING "fa:z:up:xXC:lLFvqV:hws"
 #ifdef HAVE_GETOPT_LONG
 const struct option long_options[] = {
     {"force", 0, 0, 'f'},
+    {"algorithm", 0, 0, 'a'},
     {"level", 1, 0, 'z'},
     {"uncompress", 0, 0, 'u'},
     {"parallelism", 1, 0, 'p'},
@@ -125,7 +127,24 @@ static void usage(enum verbosity level, int err)
 {
   message(level,
           "zisofs-tools " ZISOFS_TOOLS_VERSION "\n"
-          "Usage: %s [options] intree outtree\n" LO("  --force                ") "  -f    Always compress, even if result is larger\n" LO("  --level #              ") "  -z #  Set compression level (1-9)\n" LO("  --uncompress           ") "  -u    Uncompress an already compressed tree\n" LO("  --parallelism #        ") "  -p #  Process up to # files in parallel\n" LO("  --one-filesystem       ") "  -x    Do not cross filesystem boundaries\n" LO("  --strict-one-filesystem") "  -X    Same as -x, but don't create stubs dirs\n" LO("  --crib-tree            ") "  -C    Steal \"crib\" files from an old tree\n" LO("  --local                ") "  -l    Do not recurse into subdirectoires\n" LO("  --strict-local         ") "  -L    Same as -l, but don't create stubs dirs\n" LO("  --file                 ") "  -F    Operate possibly on a single file\n" LO("  --sloppy               ") "  -s    Don't abort if metadata cannot be set\n" LO("  --verbose              ") "  -v    Increase message verbosity\n" LO("  --verbosity #          ") "  -V #  Set message verbosity to # (default = %d)\n" LO("  --quiet                ") "  -q    No messages, not even errors (-V 0)\n" LO("  --help                 ") "  -h    Display this message\n" LO("  --version              ") "  -w    Display the program version\n",
+          "Usage: %s [options] intree outtree\n"
+          "  --force                  -f    Always compress, even if result is larger\n"
+          "  --algorithm #            -a #  Set compression algorithm: 0* (zlib)\n"
+          "  --level #                -z #  Set compression level (1-9)\n"
+          "  --uncompress             -u    Uncompress an already compressed tree\n"
+          "  --parallelism #          -p #  Process up to # files in parallel\n"
+          "  --one-filesystem         -x    Do not cross filesystem boundaries\n"
+          "  --strict-one-filesystem  -X    Same as -x, but don't create stubs dirs\n"
+          "  --crib-tree              -C    Steal \"crib\" files from an old tree\n"
+          "  --local                  -l    Do not recurse into subdirectoires\n"
+          "  --strict-local           -L    Same as -l, but don't create stubs dirs\n"
+          "  --file                   -F    Operate possibly on a single file\n"
+          "  --sloppy                 -s    Don't abort if metadata cannot be set\n"
+          "  --verbose                -v    Increase message verbosity\n"
+          "  --verbosity #            -V #  Set message verbosity to # (default = %d)\n"
+          "  --quiet                  -q    No messages, not even errors (-V 0)\n"
+          "  --help                   -h    Display this message\n"
+          "  --version                -w    Display the program version\n",
           program, (int)default_verbosity);
   exit(err);
 }
@@ -156,6 +175,15 @@ int main(int argc, char *argv[])
     {
     case 'f':
       opt.force = 1; /* Always compress */
+      break;
+    case 'a':
+      opt.algorithm = opt_atoi(optarg);
+      if (opt.algorithm != ZISOFS_ZLIB && opt.algorithm != ZISOFS_LZMA)
+      {
+        message(vl_error, "%s: invalid compression algorithm: %d\n",
+                program, opt.algorithm);
+        exit(EX_USAGE);
+      }
       break;
     case 'z':
       opt.level = opt_atoi(optarg);

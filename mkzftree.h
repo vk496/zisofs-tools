@@ -51,6 +51,9 @@
 #define EX_CONFIG 78      /* configuration error */
 #endif
 
+// Get types of compressors
+#include "iso9660.h"
+
 /* File transformation functions */
 typedef int (*munger_func)(FILE *, FILE *, off_t);
 int block_compress_file(FILE *, FILE *, off_t);
@@ -69,6 +72,7 @@ enum verbosity
 struct cmdline_options
 {
   int force;                /* Always compress */
+  zisofs_alg algorithm;            /* Compression algorithm */
   int level;                /* Compression level */
   int parallel;             /* Parallelism (0 = strictly serial) */
   int onefs;                /* One filesystem only */

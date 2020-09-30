@@ -33,11 +33,18 @@ struct compressed_file_header
   char uncompressed_len_low[4];
   unsigned char header_size;
   unsigned char block_size;
-  uint8_t compressor;
-  char reserved[1]; /* Reserved for future use, MBZ */
+  uint8_t algorithm;
+  char reserved[1];                 /* Reserved for future use, MBZ */
   uint8_t uncompressed_len_high[4]; // Used as extension of the size to handle files bigger than 2^32 bytes. unc_len2 << 32 | unc_len
   uint8_t reserved2[12];
 };
+
+typedef enum
+{
+  ZISOFS_ZLIB = 0, //zlib
+  ZISOFS_LZMA = 1, //lzma
+} zisofs_alg;
+
 
 /* iso9660 integer formats */
 void set_721(void *, unsigned int);
@@ -55,7 +62,7 @@ void set_733(void *, unsigned int);
 
 /* Wrap uint64 in two ints */
 
-void set_uint64_two_731(uint64_t size, void* ufsl, void* ufsh);
-uint64_t get_uint64_two_731(void* ufsl, void* ufsh);
+void set_uint64_two_731(uint64_t size, void *ufsl, void *ufsh);
+uint64_t get_uint64_two_731(void *ufsl, void *ufsh);
 
 #endif /* ISO9660_H */

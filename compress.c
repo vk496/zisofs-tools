@@ -24,6 +24,7 @@
 int block_compress_file(FILE *input, FILE *output, off_t size)
 {
   struct compressed_file_header hdr;
+  compressor_data cmps;
   unsigned char inbuf[CBLOCK_SIZE], outbuf[2 * CBLOCK_SIZE];
   size_t bytes, pointer_bytes, nblocks, block;
   size_t cbytes;
@@ -62,6 +63,15 @@ int block_compress_file(FILE *input, FILE *output, off_t size)
   curptr = pointer_block;
   position = sizeof hdr + pointer_bytes;
 
+  cmps.algorithm = opt.algorithm;
+
+  init_compressor(&cmps);
+  if (cmps.compressor == NULL)
+  {
+    err = EX_SOFTWARE;
+    goto free_ptr_bail;
+  }
+
   block = 0;
   while ((bytes = fread(inbuf, 1, CBLOCK_SIZE, input)) > 0)
   {
@@ -96,8 +106,9 @@ int block_compress_file(FILE *input, FILE *output, off_t size)
     }
     else
     {
+      hdr.algorithm = opt.algorithm;
       cbytes = 2 * CBLOCK_SIZE;
-      if ((err = compress_zlib(outbuf, &cbytes, inbuf, bytes, opt.level)) != EX_OK)
+      if ((err = compress_alg(&cmps, outbuf, &cbytes, inbuf, bytes, opt.level)) != EX_OK)
       {
         goto free_ptr_bail; /* Compression failure */
       }
@@ -110,6 +121,8 @@ int block_compress_file(FILE *input, FILE *output, off_t size)
     }
     block++;
   }
+
+  free_compressor(&cmps);
 
   /* Set pointer to the end of the final block */
   set_731(curptr, position);
