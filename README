@@ -1,3 +1,20 @@
+This branch is keept just for reference purposes. Supporting >4GiB files require a complete rewrite of the code.
+
+Please see https://github.com/vk496/zisofs2-tools
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		    H. Peter Anvin <hpa@zytor.com>
 			    June 13, 2004
 
